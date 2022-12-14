@@ -51,7 +51,7 @@ const pAequorFactory = (specimenNum, dna) => {
   }
 };
 
-// Create 15 random strand of DNA which are likely to survive
+// Create 30 random strand of DNA which are likely to survive
 const survivingSpecimen = [];
 let idCounter = 1;
 
