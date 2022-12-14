@@ -13,51 +13,51 @@ const mockUpStrand = () => {
   return newStrand
 }
 
-
-function pAequorFactory(specimenNum, dna) {
+// Create a factory function which returns an object. The object should accept two parameters: a unique number and a random strand of dna.
+// The object should return the given number and dna 
+// a method to mutate a random dna base in the strand
+// a method to compare its dna with other given dna strand
+// a method to tell wether the new pAequor is likely to survive 
+const pAequorFactory = (specimenNum, dna) => {
 
   return {
-    specimenNum: specimenNum,
-    dna: dna,
-    mutate: function() {
-      let randomIndex = Math.floor(Math.random() * 15);
-      let randomDNA = dna[randomIndex];
-      const dnaBases = ['A', 'T', 'C', 'G'];
-      let dnaOfThree = dnaBases.filter(dna => dna != randomDNA);
-      let randomDNAofThree = dnaOfThree[Math.floor(Math.random() * 3)]
-      dna[randomIndex] = randomDNAofThree;
+    specimenNum,
+    dna,
+    mutate() {
+      const randomIndex = Math.floor(Math.random() * 15);
+      let newBase = returnRandBase();
+      while (dna[randomIndex] === newBase) {
+        newBase = returnRandBase();
+      } 
+      dna[randomIndex] = newBase;
       return dna;
     },
-    compareDNA: function(pAequor) {
-      let commanDNA = [];
-      for(let i = 0; i < dna.length; i++) {
-        if(dna[i] == pAequor.dna[i]) {
-          commanDNA.push(dna[i]);
-        } 
-      } 
-      let sum = commanDNA.length;
-      let percentage = (sum / 15) * 100;
-      let roundPercentage = percentage.toFixed(2);
-      return `${specimenNum} and ${pAequor.specimenNum} have ${roundPercentage}% DNA in commom.`;
+    compareDNA(pAequor) {
+      const commonDNA = dna.reduce((acc, curr, idx, arr) => {
+        if (acc[idx] === pAequor.dna[idx]) {
+          return acc + 1;
+        } else {
+          return acc;
+        }
+      }, 0);
+      const percentOfDNAshared = (commonDNA / 15) * 100;
+      const roundUpPercentage = percentOfDNAshared.toFixed(2);
+      return `${specimenNum} and ${pAequor.specimenNum} have ${roundUpPercentage}% DNA in commom.`;
     },
-    willLikelySurvive: function() {
-      let c = dna.filter(dna => dna == "C");
-      let g = dna.filter(dna => dna == "G");
-      let percentageOfC = c.length / 15;
-      let percentageOfG = g.length / 15;
-      let percentageSum = percentageOfC + percentageOfG;
-      return(percentageSum >= 0.6 ? true : false);
-    }
+    willLikelySurvive() {
+      const cOrG = dna.filter(el => el === "C" || el === "G");
+      return(cOrG.length / 15 >= 0.6);
+    },
   }
 };
 
-let filteredArr = [];
-let counter = 1;
+// Create 15 random strand of DNA which are likely to survive
+const survivingSpecimen = [];
+let idCounter = 1;
 
-while(filteredArr.length < 30) {
-    let newpAequor = pAequorFactory(counter, mockUpStrand());
-    if(newpAequor.willLikelySurvive()) {
-        filteredArr.push(newpAequor);
-    }
-    counter++;
-}
+while (survivingSpecimen.length < 30) {
+  let newOrg = pAequorFactory(idCounter, mockUpStrand());
+  if (newOrg.willLikelySurvive()) {
+    survivingSpecimen.push(newStrand);
+  } idCounter++;
+} 
